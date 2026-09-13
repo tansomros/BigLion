@@ -1,0 +1,1369 @@
+﻿using System.Data;
+using System.Diagnostics;
+using Microsoft.VisualBasic;
+using SUTH.Checkup.Api.Client;
+using SUTH.HealthCheckup.WinFormsUI.Functions;
+using SUTH.HealthCheckup.WinFormsUI.ValueObject;
+using SUTH.Hosxp.Api.Client;
+using CClass = SUTH.HealthCheckup.WinFormsUI.ValueObjects.CheckupClass;
+using Fn = SUTH.HealthCheckup.WinFormsUI.Functions.CheckupFunction;
+using HxpClient = SUTH.Hosxp.Api.Client;
+<<<<<<< HEAD
+using DevExpress.XtraGrid.Views.Grid;
+using Microsoft.VisualBasic;
+using SUTH.HealthCheckup.WinFormsUI.Functions;
+using System.Diagnostics;
+<<<<<<< HEAD
+using DevExpress.Data.Helpers;
+using RefGroup = SUTH.HealthCheckup.WinFormsUI.ValueObjects.ReferenceGroup;
+=======
+using PhysicalExaminationViewModel = SUTH.Checkup.Api.Client.PhysicalExaminationViewModel;
+>>>>>>> c6a329d (save PE)
+
+namespace SUTH.HealthCheckup.WinFormsUI;
+public partial class frmCheckupMain : DevExpress.XtraEditors.XtraForm
+{
+    public string _visitNumber { get; set; }
+    private readonly CheckupApiClient _checkupApiClient;
+    private readonly HosxpApiClient _hosxpApiClient;
+    public Checkup.Api.Client.CheckupViewModel _checkupViewModel;
+    public Hosxp.Api.Client.LabListViewModel _labListViewModel;
+    public Hosxp.Api.Client.XrayListViewModel _xrayViewModel;
+    public Checkup.Api.Client.CheckupItemListViewModel _itemGroup;
+    public EyeViewModel _hosXpEyeLabViewmodel;
+    public SUTH.Checkup.Api.Client.PhysicalExaminationViewModel _checkupPEViewModel;
+    public UpdateCheckupCommand _updateCheckupCommand;
+
+    public struct LabXrayStruct
+    {
+        public string Code { get; set; }
+        public string ResultItemName { get; set; }
+        public string ResultValue { get; set; }
+        public string ReferenceRange { get; set; }
+        public string IsAbnormal { get; set; }
+        public string ResultReport { get; set; }
+        public string ReportText { get; set; }
+        public string LabItemCode { get; set; }
+    }
+
+
+    public frmCheckupMain(CheckupApiClient checkupApiClient, HosxpApiClient hosxpApiClient)
+    {
+        InitializeComponent();
+        _checkupApiClient = checkupApiClient;
+        _hosxpApiClient = hosxpApiClient;
+
+        _updateCheckupCommand = new UpdateCheckupCommand();
+    }
+
+    private async void frmCheckupMain_Load(object sender, EventArgs e)
+    {
+        pnDotorConclusion.Width = 600;
+        pnMainLab.Width = this.Width - 840;
+        progressLoad.Size = new Size(this.Width, this.Height);
+        progressLoad.Location = new Point(0, 0);
+        progressLoad.Visible = true;
+
+        cmdPrintResultBookCover.Visible = false;
+        cmdPrintResultBook.Visible = false;
+        cmdPrintResultNew.Visible = false;
+        cmdPrintResultOld.Visible = false;
+        cmdPrintResultStudent.Visible = false;
+
+        splitContainerControl1.SplitterPosition = 1000;
+
+        //_checkupViewModel = await _checkupApiClient.GetCheckupByVisitNumberAsync(_visitNumber);
+        if (_checkupViewModel != null)
+        {
+
+            progressLoad.Visible = false;
+            ShowPatientInfo(_checkupViewModel.HospitalNumber);
+            LoadPatientImage();
+            BindProvinceToDDL();
+            BindCareproviderToDDL();
+            BindReferenceValueGAToDDL();
+            BindReferenceValueVisionToDDL();
+            BindReferenceValueAudiogramToDDL();
+            BindReferenceValueXrayToDDL();
+            LoadRecommendationTemplate();
+            BindNormalAbnormalLabResultDataToDDL();
+            progressLoad.Visible = false;
+            GetVitalSign();
+            leIsAbnormal.NullText = "N";
+            //GetCBC();
+            GetPhysicalExamination();
+            GetEye();
+            GetAudiogram();
+            var xrays = _checkupViewModel?.Xrays.ToList() ?? [];
+            GetOtherSpecial(xrays);
+            _labListViewModel = await Fn.HosxpGetLabByVisitNumberAsync(_checkupViewModel?.VisitNumber, this, _hosxpApiClient);
+            if (_labListViewModel != null)
+            {
+                gridUrine.DataSource = await FilterItemGroup(CClass.UrineAnalysis, _labListViewModel.Labs.ToList());
+                grdCBC.DataSource = await FilterItemGroup(CClass.CBC, _labListViewModel.Labs.ToList());
+                gridBloodChemistry.DataSource = await FilterItemGroup(CClass.BloodChemistry, _labListViewModel.Labs.ToList());
+                gridStool.DataSource = await FilterItemGroup(CClass.StoolExamination, _labListViewModel.Labs.ToList());
+                gridStoolCulture.DataSource = await FilterItemGroup(CClass.StoolCulture, _labListViewModel.Labs.ToList());
+                grdSpecialTest.DataSource = await FilterItemGroup(CClass.SpecialTest, _labListViewModel.Labs.ToList());
+                //Confidential กังวลเรื่องฟิลด์ lab_order.confirm = 'Y' HN:20037453 LO_NO:23428998
+                grdConfidential.DataSource = await FilterItemGroup(CClass.Confidential, _labListViewModel.Labs.ToList());
+                //gridBloodChemistry.DataSource = await FilterItemGroup(CClass.BloodChemistry, _labListViewModel.Labs.ToList());
+            }
+            //สรุปผลการตรวจสุขภาพและข้อเสนอแนะของแพทย์
+            txtResult_DoctorRecommend.Text = _checkupViewModel.Conclusion;
+            _xrayViewModel = await Fn.HosxpGetXrayByVisitNumberAsync(_checkupViewModel?.VisitNumber, this, _hosxpApiClient);
+            if (_xrayViewModel != null)
+            {
+<<<<<<< HEAD
+                try
+                {
+                    var xrayCheckup = await FilterItemGroup(CClass.Xray, _xrayViewModel.Xrays.ToList());
+
+                    if (xrayCheckup[0].ReportText != "������Ǩ")
+                    {
+                        richX_ChestPA.Rtf = xrayCheckup.Where(x => x.Code == "X01").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                    }
+                    richX_Mammogram.Text = xrayCheckup.Where(x => x.Code == "MAMO").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                    richX_AbdomenRemark.Text = xrayCheckup.Where(x => x.Code == "X02").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                    richX_LowerAbdomenRemark.Text = xrayCheckup.Where(x => x.Code == "X03").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+=======
+                var xrayCheckup = await FilterItemGroup(CClass.Xray, _xrayViewModel.Xrays.ToList());
+
+                richX_ChestPA.Rtf = xrayCheckup.Where(x => x.Code == "X01").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                richX_Mammogram.Text = xrayCheckup.Where(x => x.Code == "MAMO").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                richX_AbdomenRemark.Text = xrayCheckup.Where(x => x.Code == "X02").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+                richX_LowerAbdomenRemark.Text = xrayCheckup.Where(x => x.Code == "X03").Select(x => x.ReportText).FirstOrDefault()?.ToString() ?? null;
+>>>>>>> 12864d7 (add di service collection, clean)
+            }
+        }
+    }
+
+    private async void BindNormalAbnormalLabResultDataToDDL()
+    {
+        var result = await _checkupApiClient.GetReferenceValueAbnormalByGroupAsync(RefGroup.LAB);
+        leIsAbnormal.DataSource = result.ReferenceValues.ToList();
+        leIsAbnormal.DisplayMember = "Descriptions";
+        leIsAbnormal.ValueMember = "ValueCode";
+
+        //DevExpress.XtraEditors.Controls.LookUpColumnInfo col2;
+        //col2 = new DevExpress.XtraEditors.Controls.LookUpColumnInfo("DisplayName", "", 120);
+        //leIsAbnormal.Columns.Add(col2);       
+    }
+
+    private async void BindProvinceToDDL()
+    {
+        var province = await _checkupApiClient.GetProvinceListAsync();
+        ddlProvince.Properties.DataSource = province.Provinces.ToList();
+        ddlProvince.Properties.DisplayMember = "Name";
+        ddlProvince.Properties.ValueMember = "ProvinceId";
+    }
+    private async void BindDistrictToDDL()
+    {
+        var district = await _checkupApiClient.GetDistrictListAsync(ddlProvince.EditValue.ToString());
+        ddlDistrict.Properties.DataSource = district.Districts.ToList();
+        ddlDistrict.Properties.DisplayMember = "Name";
+        ddlDistrict.Properties.ValueMember = "DistrictId";
+    }
+    private async void BindSubDistrictToDDL()
+    {
+        var subDistrict = await _checkupApiClient.GetSubDistrictListAsync(ddlDistrict.EditValue.ToString());
+        ddlSubDistrict.Properties.DataSource = subDistrict.SubDistricts.ToList();
+        ddlSubDistrict.Properties.DisplayMember = "Name";
+        ddlSubDistrict.Properties.ValueMember = "SubDistrictId";
+    }
+
+    private async void BindCareproviderToDDL()
+    {
+        var doctors = await _hosxpApiClient.GetDoctorListByPositionIdQueryAsync(1);
+        ddlDoctor_PE.Properties.DataSource = doctors.Doctors.ToList();
+        ddlDoctor_PE.Properties.DisplayMember = "Name";
+        ddlDoctor_PE.Properties.ValueMember = "Code";
+
+        ddlDoctor_Conclusion.Properties.DataSource = doctors.Doctors.ToList();
+        ddlDoctor_Conclusion.Properties.DisplayMember = "Name";
+        ddlDoctor_Conclusion.Properties.ValueMember = "Code";
+
+    }
+
+    private async void BindReferenceValueGAToDDL()
+    {
+        var general = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.General);
+
+        ddlGA_LevelOfConsciousne.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_LevelOfConsciousne.Properties.DisplayMember = "Descriptions";
+        ddlGA_LevelOfConsciousne.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Abdomen.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Abdomen.Properties.DisplayMember = "Descriptions";
+        ddlGA_Abdomen.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Extremties.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Extremties.Properties.DisplayMember = "Descriptions";
+        ddlGA_Extremties.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Heen.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Heen.Properties.DisplayMember = "Descriptions";
+        ddlGA_Heen.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Heart.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Heart.Properties.DisplayMember = "Descriptions";
+        ddlGA_Heart.Properties.ValueMember = "ValueCode";
+
+        ddlGA_LungChestBreast.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_LungChestBreast.Properties.DisplayMember = "Descriptions";
+        ddlGA_LungChestBreast.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Lymphoma.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Lymphoma.Properties.DisplayMember = "Descriptions";
+        ddlGA_Lymphoma.Properties.ValueMember = "ValueCode";
+
+        ddlGA_MouthAndThroat.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_MouthAndThroat.Properties.DisplayMember = "Descriptions";
+        ddlGA_MouthAndThroat.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Skin.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Skin.Properties.DisplayMember = "Descriptions";
+        ddlGA_Skin.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Thyroid.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Thyroid.Properties.DisplayMember = "Descriptions";
+        ddlGA_Thyroid.Properties.ValueMember = "ValueCode";
+
+        ddlGA_Others.Properties.DataSource = general.ReferenceValues.ToList();
+        ddlGA_Others.Properties.DisplayMember = "Descriptions";
+        ddlGA_Others.Properties.ValueMember = "ValueCode";
+    }
+
+    private async void BindReferenceValueVisionToDDL()
+    {
+        var va = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.General);
+
+        ddlVS_VisibilityLeft.Properties.DataSource = va.ReferenceValues.ToList();
+        ddlVS_VisibilityLeft.Properties.DisplayMember = "Descriptions";
+        ddlVS_VisibilityLeft.Properties.ValueMember = "ValueCode";
+
+        ddlVS_VisibilityRight.Properties.DataSource = va.ReferenceValues.ToList();
+        ddlVS_VisibilityRight.Properties.DisplayMember = "Descriptions";
+        ddlVS_VisibilityRight.Properties.ValueMember = "ValueCode";
+
+        ddlPH_VisibilityLeft.Properties.DataSource = va.ReferenceValues.ToList();
+        ddlPH_VisibilityLeft.Properties.DisplayMember = "Descriptions";
+        ddlPH_VisibilityLeft.Properties.ValueMember = "ValueCode";
+
+        ddlPH_VisibilityRight.Properties.DataSource = va.ReferenceValues.ToList();
+        ddlPH_VisibilityRight.Properties.DisplayMember = "Descriptions";
+        ddlPH_VisibilityRight.Properties.ValueMember = "ValueCode";
+
+    }
+    private async void BindReferenceValueAudiogramToDDL()
+    {
+        var audiogram = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.Audiogram);
+
+        ddlEarsLeft.Properties.DataSource = audiogram.ReferenceValues.ToList();
+        ddlEarsLeft.Properties.DisplayMember = "Descriptions";
+        ddlEarsLeft.Properties.ValueMember = "ValueCode";
+
+        ddlEarsRight.Properties.DataSource = audiogram.ReferenceValues.ToList();
+        ddlEarsRight.Properties.DisplayMember = "Descriptions";
+        ddlEarsRight.Properties.ValueMember = "ValueCode";
+    }
+    private async void BindReferenceValueXrayToDDL()
+    {
+        var xray = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.Xray);
+
+        ddlX_ChestPA.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_ChestPA.Properties.DisplayMember = "Descriptions";
+        ddlX_ChestPA.Properties.ValueMember = "ValueCode";
+
+        ddlX_Abdomen.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_Abdomen.Properties.DisplayMember = "Descriptions";
+        ddlX_Abdomen.Properties.ValueMember = "ValueCode";
+
+        ddlX_LowerAbdomen.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_LowerAbdomen.Properties.DisplayMember = "Descriptions";
+        ddlX_LowerAbdomen.Properties.ValueMember = "ValueCode";
+
+        ddlX_UpperAbdomen.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_UpperAbdomen.Properties.DisplayMember = "Descriptions";
+        ddlX_UpperAbdomen.Properties.ValueMember = "ValueCode";
+
+        ddlX_Echo.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_Echo.Properties.DisplayMember = "Descriptions";
+        ddlX_Echo.Properties.ValueMember = "ValueCode";
+
+        ddlX_EKG.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_EKG.Properties.DisplayMember = "Descriptions";
+        ddlX_EKG.Properties.ValueMember = "ValueCode";
+
+        ddlX_EST.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_EST.Properties.DisplayMember = "Descriptions";
+        ddlX_EST.Properties.ValueMember = "ValueCode";
+
+        ddlX_Mammogram.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_Mammogram.Properties.DisplayMember = "Descriptions";
+        ddlX_Mammogram.Properties.ValueMember = "ValueCode";
+
+
+        ddlX_USBreast.Properties.DataSource = xray.ReferenceValues.ToList();
+        ddlX_USBreast.Properties.DisplayMember = "Descriptions";
+        ddlX_USBreast.Properties.ValueMember = "ValueCode";
+
+
+        var abi = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.ABI);
+
+        ddlX_ABI.Properties.DataSource = abi.ReferenceValues.ToList();
+        ddlX_ABI.Properties.DisplayMember = "Descriptions";
+        ddlX_ABI.Properties.ValueMember = "ValueCode";
+
+        var bmd = await _checkupApiClient.GetReferenceValueByGroupAsync(RefGroup.BMD);
+
+        ddlX_BMD.Properties.DataSource = bmd.ReferenceValues.ToList();
+        ddlX_BMD.Properties.DisplayMember = "Descriptions";
+        ddlX_BMD.Properties.ValueMember = "ValueCode";
+
+
+    }
+
+    private void ShowPatientInfo(string hn)
+    {
+        if (_checkupViewModel == null)
+            return;
+
+
+        System.Threading.Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo("th-TH");
+        var dateString = _checkupViewModel.VisitDate.ToThaiDateString();
+
+        lblHN.Text = string.Concat(_checkupViewModel.HospitalNumber);
+        lblStaffID.Text = string.Concat(_checkupViewModel.Patient.EmployeeId);
+        lblVisitNo.Text = string.Concat(_checkupViewModel.VisitNumber);
+        lblVisitDate.Text = GlobalFunctions.DisplayStr2ShortDateTH(_checkupViewModel.VisitDate.ToString("dd/MM/yyyy", new System.Globalization.CultureInfo("th-TH")));
+        lblPatientName.Text = string.Concat(_checkupViewModel.Patient.FullName);
+        lblAge.Text = string.Concat(_checkupViewModel.AgeTextCheckup);
+        lblGender.Text = string.Concat(_checkupViewModel.Patient.Gender);
+        lblIdcard.Text = string.Concat(_checkupViewModel.Patient.NationId);
+        lblDOB.Text = GlobalFunctions.DisplayStr2ShortDateTH(_checkupViewModel.Patient.BirthDate.ToString("dd/MM/yyyy", new System.Globalization.CultureInfo("th-TH")));
+
+        lblNationality.Text = string.Concat(_checkupViewModel.Patient.Nationality);
+        lblTel.Text = string.Concat(_checkupViewModel.Patient.TelephoneNumber);
+        lblPayor.Text = string.Concat(_checkupViewModel.PayorName);
+
+        txtAddress.Text = string.Concat(_checkupViewModel.Patient.Address);
+        ddlProvince.EditValue = string.Concat(_checkupViewModel.Patient.ProvinceId);
+        BindDistrictToDDL();
+        ddlDistrict.EditValue = string.Concat(_checkupViewModel.Patient.DistrictId);
+        BindSubDistrictToDDL();
+        ddlSubDistrict.EditValue = string.Concat(_checkupViewModel.Patient.SubDistrictId);
+        txtZipCode.Text = string.Concat(_checkupViewModel.Patient.ZipCode);
+
+    }
+
+    private void GetVitalSign()
+    {
+        if (_checkupViewModel == null)
+            return;
+
+        lblWeight.Text = _checkupViewModel.Weight.ToString();
+        lblHeight.Text = _checkupViewModel.Height.ToString();
+        lblBMI.Text = _checkupViewModel.Bmi.ToString();
+        lblTemperature.Text = _checkupViewModel.Temperature.ToString();
+        lblPluse.Text = _checkupViewModel.PulseRate?.ToString() ?? "";
+        lblRR.Text = _checkupViewModel.RespiratoryRate?.ToString() ?? "";
+        lblBP.Text = String.Format("{0}/{1}", _checkupViewModel.SystolicBloodPresure?.ToString() ?? "", _checkupViewModel.DiastolicBloodPresure?.ToString() ?? "");
+        //lblRh.Text = _checkupViewModel.Rh
+    }
+
+    private async Task<List<LabXrayStruct>> FilterItemGroup(string labGroup, List<HxpClient.LabViewModel> hxpLabList)
+    {
+        List<LabXrayStruct> ret = [];
+        var itemGroups = await Fn.GetCheckupItemByClassCodeAsync(labGroup, this, _checkupApiClient);
+        if (itemGroups == null) return ret;
+        var itemGroup = itemGroups.CheckupItems.ToList();
+
+        ret = hxpLabList.Join(
+            itemGroup,
+            (Hosxp.Api.Client.LabViewModel labList) => labList.LabItemCode.ToString(),
+            (CheckupItemViewModel itemGroup) => itemGroup.LabItemCode,
+            (labList, itemGroup) => new LabXrayStruct
+            {
+                ResultItemName = itemGroup.DisplayName,
+                ResultValue = labList.ResultValue,
+                ReferenceRange = labList.ReferenceRange,
+                IsAbnormal = labList.IsAbnormal,
+                LabItemCode = labList.LabItemCode.ToString(),
+            })
+            .ToList(); //ต้องการข้อมูล Lab result เฉพาะ UA และใช้ชื่อ Lab จาก itemGroup ฝั่ง Checkup
+
+        return ret;
+    }
+
+    private async Task<List<LabXrayStruct>> FilterItemGroup(string xrayGroup, List<HxpClient.XrayViewModel> hxpXrayList)
+    {
+        List<LabXrayStruct> ret = [];
+        var itemGroups = await Fn.GetCheckupItemByClassCodeAsync(xrayGroup, this, _checkupApiClient);
+        if (itemGroups == null) return ret;
+        var itemGroup = itemGroups.CheckupItems.ToList();
+
+        ret = hxpXrayList.Join(
+            itemGroup,
+            (Hosxp.Api.Client.XrayViewModel xrayList) => xrayList.HosxpItemCode.ToString(),
+            (CheckupItemViewModel itemGroup) => itemGroup.LabItemCode,
+            (xrayList, itemGroup) => new LabXrayStruct
+            {
+                Code = itemGroup.Code,
+                ResultItemName = itemGroup.DisplayName,
+                ResultValue = xrayList.ResultValue,
+                ReportText = xrayList.ReportText,
+                IsAbnormal = xrayList.IsAbnormal,
+            })
+            .ToList(); //ต้องการข้อมูล Lab result เฉพาะ UA และใช้ชื่อ Lab จาก itemGroup ฝั่ง Checkup
+
+        return ret;
+    }
+
+    private void frmCheckupMain_SizeChanged(object sender, EventArgs e)
+    {
+        pnDotorConclusion.Width = 600;
+        pnMainLab.Width = this.Width - 840;
+    }
+
+    private async void LoadPatientImage()
+    {
+        var patientImage = await _hosxpApiClient.GetPatientImageAsync(_checkupViewModel.HospitalNumber);
+        Image imageFromStream = Image.FromStream(patientImage.Stream);
+        pictureEdit1.Image = imageFromStream;
+    }
+
+    private async void LoadRecommendationTemplate()
+    {
+        var rcms = await _checkupApiClient.GetRecommendationTemplateListAsync();
+        lstRecommendList.DataSource = rcms.RecommendationTemplates.ToList();
+        lstRecommendList.DisplayMember = "Text";
+        lstRecommendList.ValueMember = "Text";
+    }
+
+    private async void GetAudiogram()
+    {
+        var audiogram = _checkupViewModel.Audiograms.FirstOrDefault();
+        if (audiogram == null)
+            return;
+
+        ddlEarsRight.EditValue = audiogram.RightAbnormalTypeId;
+        txtEarsRightRemark.Text = audiogram.RightResult;
+        txtEarsLeftRemark.Text = audiogram.LeftResult;
+        ddlEarsLeft.EditValue = audiogram.LeftAbnormalTypeId;
+
+        var hearingHertzs = await _checkupApiClient.GetHearingHertzListAsync(1, 20);
+        var hearingHertzList = hearingHertzs.Items.ToList();
+        var hearingListPage = await _checkupApiClient.GetHearingListByAudigramIdAsync(audiogram.Id, 1, 20);
+        var hearingList = hearingListPage.Items.ToList();
+
+        var hearing = from Hz in hearingHertzList
+                      join Hr in hearingList on Hz.Hertz equals Hr.Hertz into resultJoin
+                      from Rh in resultJoin.DefaultIfEmpty()
+                      select new
+                      {
+                          Id = Rh?.Id,
+                          Hertz = Hz.Hertz.ToString(),
+                          RightHz = Rh?.RightHz.ToString(),
+                          LeftHz = Rh?.LeftHz.ToString(),
+                      };
+
+        grdHearing.DataSource = hearing;
+    }
+
+    private async void GetPhysicalExamination()
+    {
+        PhysicalExaminationViewModel _checkupPE;
+
+        try
+        {
+            _checkupPE = await _checkupApiClient.GetPhysicalExaminationByVisitNumberAsync(_checkupViewModel?.VisitNumber);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            _checkupPE = null;
+        }
+
+        if (_checkupPE != null)
+        {
+            ddlGA_LevelOfConsciousne.EditValue = _checkupPE.Ga;
+            ddlGA_Heen.EditValue = _checkupPE.Heent;
+            ddlGA_MouthAndThroat.EditValue = _checkupPE.Mouth;
+            ddlGA_Lymphoma.EditValue = _checkupPE.Lymph;
+            ddlGA_Thyroid.EditValue = _checkupPE.Thyroid;
+            ddlGA_LungChestBreast.EditValue = _checkupPE.Chest;
+            ddlGA_Heart.EditValue = _checkupPE.Heart;
+            ddlGA_Abdomen.EditValue = _checkupPE.Abdomen;
+            ddlGA_Extremties.EditValue = _checkupPE.Ext;
+            ddlGA_Skin.EditValue = _checkupPE.Skin;
+            ddlGA_Others.EditValue = _checkupPE.Other;
+
+            txtGA_LevelOfConsciousne.Text = _checkupPE.GaText;
+            txtGA_Heen.Text = _checkupPE.HeentText;
+            txtGA_MouthAndThroat.Text = _checkupPE.MouthText;
+            txtGA_Lymphoma.Text = _checkupPE.LymphText;
+            txtGA_Thyroid.Text = _checkupPE.ThyroidText;
+            txtGA_LungChestBreast.Text = _checkupPE.ChestText;
+            txtGA_Heart.Text = _checkupPE.HeartText;
+            txtGA_Abdomen.Text = _checkupPE.AbdomenText;
+            txtGA_Extremties.Text = _checkupPE.ExtText;
+            txtGA_Skin.Text = _checkupPE.SkinText;
+            txtGA_Others.Text = _checkupPE.OtherText;
+        }
+    }
+     
+    private async void GetEye()
+    {
+        _hosXpEyeLabViewmodel = await Fn.HosxpGetEYEByVisitNumberAsync(_checkupViewModel?.VisitNumber, this, _hosxpApiClient, false);
+        if (_hosXpEyeLabViewmodel != null)
+        {
+            txtVS_VisibilityLeft.Text = _hosXpEyeLabViewmodel.VA_Left_Note;
+            txtVS_VisibilityRight.Text = _hosXpEyeLabViewmodel.VA_Right_Note;
+            txtPH_VisibilityLeft.Text = _hosXpEyeLabViewmodel.PH_Left_Note;
+            txtPH_VisibilityRight.Text = _hosXpEyeLabViewmodel.PH_Right_Note;
+            txtVS_EyeballLeft.Text = _hosXpEyeLabViewmodel.PressureLeft?.ToString();
+            txtVS_EyeballRight.Text = _hosXpEyeLabViewmodel.PressureRight?.ToString();
+            txtVS_RetinaLeft.Text = _hosXpEyeLabViewmodel.RetinaLeft?.ToString();
+            txtVS_RetinaRight.Text = _hosXpEyeLabViewmodel.RetinaRight?.ToString();
+            txtVS_BlindRemark.Text = _hosXpEyeLabViewmodel.ColorBlind;
+            txtVS_3D.Text = _hosXpEyeLabViewmodel.Vision3D;
+            txtVS_Squit.Text = _hosXpEyeLabViewmodel.Squint;
+            txtVS_VisualField.Text = _hosXpEyeLabViewmodel.VisualField;
+
+        }
+    }
+
+    private void GetOtherSpecial(List<Checkup.Api.Client.XrayViewModel> xrays)
+    {
+        //var xrays = await Fn.CheckupGetXrayList(_checkupViewModel?.VisitNumber, this, _checkupApiClient, false);
+        if (xrays.Count > 0)
+        {
+            txtX_EKGResult.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.EKG)?.ResultReport;
+            txtX_ESTRemark.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.EST)?.ResultReport;
+            txtX_BMDRemark.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.BMD)?.ResultReport;
+            txtX_ABIRemark.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.ABI)?.ResultReport;
+            txtVegina.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.PapSmear)?.ResultReport;
+            txtPapSmear.Text = xrays.FirstOrDefault(s => s.CheckupItem?.Code == CheckupItemCode.LiquidBasedPap)?.ResultReport;
+        }
+    }
+
+    private async void cmdTempSave_Click(object sender, EventArgs e)
+    {
+        await SavePhysicalExamAsync(_checkupViewModel);
+        //SaveCheckupData();
+    }
+
+    private void cmdFinalize_Click(object sender, EventArgs e)
+    {
+        SaveCheckupData();
+    }
+    private async void SaveCheckupData()
+    {
+        await SavePhysicalExamAsync(_checkupViewModel);
+
+        //await SaveVisionAsync(_checkupViewModel);
+        var audiogram = _checkupViewModel.Audiograms.FirstOrDefault();
+        if (audiogram == null)
+        {
+            CreateAudiogram();
+        }
+        else
+        {
+
+        }
+
+        List<FinalLabCommand> finalLabCommands = [];
+        //
+        //Lab
+        //
+        List<LabXrayStruct> urines = (List<LabXrayStruct>)gridUrine.DataSource;
+        List<LabXrayStruct> cbcs = (List<LabXrayStruct>)grdCBC.DataSource;
+        List<LabXrayStruct> stools = (List<LabXrayStruct>)gridStool.DataSource;
+        List<LabXrayStruct> stoolCultures = (List<LabXrayStruct>)gridStoolCulture.DataSource;
+        List<LabXrayStruct> specialTests = (List<LabXrayStruct>)grdSpecialTest.DataSource;
+        List<LabXrayStruct> confidentials = (List<LabXrayStruct>)grdConfidential.DataSource;
+        List<LabXrayStruct> bloodChemistry = (List<LabXrayStruct>)gridBloodChemistry.DataSource;
+
+        urines.ForEach(urine => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.UrineAnalysis,
+            Interpretation = string.Empty,
+            Name = urine.ResultItemName,
+            ReferenceRange = urine.ReferenceRange,
+            ResultValue = urine.ResultValue,
+
+        }));
+
+        cbcs.ForEach(cbc => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.CBC,
+            Interpretation = string.Empty,
+            Name = cbc.ResultItemName,
+            ReferenceRange = cbc.ReferenceRange,
+            ResultValue = cbc.ResultValue,
+        }));
+
+        stools.ForEach(stool => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.StoolExamination,
+            Interpretation = string.Empty,
+            Name = stool.ResultItemName,
+            ReferenceRange = stool.ReferenceRange,
+            ResultValue = stool.ResultValue,
+        }));
+
+        stoolCultures.ForEach(stoolCulture => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.StoolCulture,
+            Interpretation = string.Empty,
+            Name = stoolCulture.ResultItemName,
+            ReferenceRange = stoolCulture.ReferenceRange,
+            ResultValue = stoolCulture.ResultValue,
+        }));
+
+        specialTests.ForEach(specislTest => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.SpecialTest,
+            Interpretation = string.Empty,
+            Name = specislTest.ResultItemName,
+            ReferenceRange = specislTest.ReferenceRange,
+            ResultValue = specislTest.ResultValue,
+        }));
+
+        confidentials.ForEach(confidential => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.SpecialTest,
+            Interpretation = string.Empty,
+            Name = confidential.ResultItemName,
+            ReferenceRange = confidential.ReferenceRange,
+            ResultValue = confidential.ResultValue,
+        }));
+
+        bloodChemistry.ForEach(bloodChem => finalLabCommands.Add(new FinalLabCommand()
+        {
+            ClassCode = CClass.SpecialTest,
+            Interpretation = string.Empty,
+            Name = bloodChem.ResultItemName,
+            ReferenceRange = bloodChem.ReferenceRange,
+            ResultValue = bloodChem.ResultValue,
+        }));
+        //
+        //Vision
+        //
+        var finalVisionCommand = new FinalVisionCommand()
+        {
+            ColorBlind = _hosXpEyeLabViewmodel.ColorBlind,
+            VisualField = _hosXpEyeLabViewmodel.VisualField,
+            Vision3D = _hosXpEyeLabViewmodel.Vision3D,
+            VA_Right_Note = _hosXpEyeLabViewmodel.VA_Right_Note,
+            VA_Left_Note = _hosXpEyeLabViewmodel.VA_Left_Note,
+            PH_Left_Note = _hosXpEyeLabViewmodel.PH_Left_Note,
+            PH_Right_Note = _hosXpEyeLabViewmodel.PH_Right_Note,
+            PressureLeft = _hosXpEyeLabViewmodel.PressureLeft?.ToString(),
+            PressureRight = _hosXpEyeLabViewmodel.PressureRight?.ToString(),
+            RetinaLeft = _hosXpEyeLabViewmodel.RetinaLeft?.ToString(),
+            RetinaRight = _hosXpEyeLabViewmodel.RetinaRight?.ToString(),
+            Squint = _hosXpEyeLabViewmodel.Squint,
+        };
+        //
+        //
+        //
+        var finalCommand = new SaveCheckupFinalReportCommand()
+        {
+            Id = _checkupViewModel.Id,
+            FinalReports = new()
+            {
+                Labs = finalLabCommands,
+                Vision = finalVisionCommand
+            },
+        };
+
+        //_checkupApiClient.SaveFinalCheckupAsync(_checkupViewModel.Id, finalCommand);
+
+    }
+
+
+    private void gridViewCBC_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == gridViewCBC.Columns[1])
+        {
+            var value = gridViewCBC.GetRowCellValue(e.RowHandle, gridViewCBC.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void gridViewBloodChemistry_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == gridViewBloodChemistry.Columns[1])
+        {
+            var value = gridViewBloodChemistry.GetRowCellValue(e.RowHandle, gridViewBloodChemistry.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void gridViewUrine_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == gridViewUrine.Columns[1])
+        {
+            var value = gridViewUrine.GetRowCellValue(e.RowHandle, gridViewUrine.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void gridViewStool_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == gridViewStool.Columns[1])
+        {
+            var value = gridViewStool.GetRowCellValue(e.RowHandle, gridViewStool.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void gridViewStoolCulture_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == gridViewStoolCulture.Columns[1])
+        {
+            var value = gridViewStoolCulture.GetRowCellValue(e.RowHandle, gridViewStoolCulture.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void grdViewSpecialTest_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == grdViewSpecialTest.Columns[1])
+        {
+            var value = grdViewSpecialTest.GetRowCellValue(e.RowHandle, grdViewSpecialTest.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void grdViewConfidential_CustomDrawCell(object sender, DevExpress.XtraGrid.Views.Base.RowCellCustomDrawEventArgs e)
+    {
+        if (e.RowHandle >= 0 && e.Column == grdViewConfidential.Columns[1])
+        {
+            var value = grdViewConfidential.GetRowCellValue(e.RowHandle, grdViewConfidential.Columns[4]);
+            if (value != null && value.ToString().Trim() == "Y")
+            {
+                e.Appearance.ForeColor = System.Drawing.ColorTranslator.FromHtml("#cc0000");
+            }
+        }
+    }
+
+    private void lstRecommendList_DoubleClick(object sender, EventArgs e)
+    {
+
+        txtResult_DoctorRecommend.Text += Constants.vbCrLf + string.Concat(lstRecommendList.SelectedValue);
+    }
+
+    private void lstRecommendList_SelectedValueChanged(object sender, EventArgs e)
+    {
+        if (lstRecommendList.SelectedValue != null)
+        {
+            HighlightDoctorSuggestionText(lstRecommendList.SelectedValue.ToString());
+        }
+    }
+    private void HighlightDoctorSuggestionText(string sSearch)
+    {
+        int startSelect, endSelect;
+        startSelect = 0;
+        endSelect = 0;
+        txtResult_DoctorRecommend.DeselectAll();
+        startSelect = txtResult_DoctorRecommend.Text.IndexOf(sSearch);
+        endSelect = sSearch.Length;
+        if (startSelect >= 0) txtResult_DoctorRecommend.Select(startSelect, endSelect);
+    }
+
+    private void txtSearchRecommendation_KeyDown(object sender, KeyEventArgs e)
+    {
+
+        if (e.KeyCode == Keys.Space || e.KeyCode == Keys.Enter)
+        {
+            if (txtSearchRecommendation.Text.Length >= 3)
+            {
+                HighlightDoctorSuggestionText(txtSearchRecommendation.Text);
+            }
+        }
+    }
+
+    private void cmdClose_Click(object sender, EventArgs e)
+    {
+        this.Close();
+    }
+
+    public async Task SavePhysicalExamAsync(Checkup.Api.Client.CheckupViewModel checkupViewModel)
+    {
+        PhysicalExaminationViewModel physicalExamViewModel = null;
+        try
+        {
+            physicalExamViewModel = await _checkupApiClient.GetPhysicalExaminationByVisitNumberAsync(checkupViewModel.VisitNumber);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            physicalExamViewModel = null;
+        }
+
+        if (physicalExamViewModel == null)
+        {
+            var command = new CreatePhysicalExaminationCommand
+            {
+                VisitNumber = checkupViewModel.VisitNumber,
+                CheckupId = checkupViewModel.Id,
+                CheckupItemId = 1,
+                Ga = ddlGA_LevelOfConsciousne.EditValue?.ToString(),
+                Heent = ddlGA_Heen.EditValue?.ToString(),
+                Mouth = ddlGA_MouthAndThroat.EditValue?.ToString(),
+                Lymph = ddlGA_Lymphoma.EditValue?.ToString(),
+                Thyroid = ddlGA_Thyroid.EditValue?.ToString(),
+                Chest = ddlGA_LungChestBreast.EditValue?.ToString(),
+                Heart = ddlGA_Heart.EditValue?.ToString(),
+                Abdomen = ddlGA_Abdomen.EditValue?.ToString(),
+                Ext = ddlGA_Extremties.EditValue?.ToString(),
+                Skin = ddlGA_Skin.EditValue?.ToString(),
+                Other = ddlGA_Others.EditValue?.ToString(),
+
+                GaText = txtGA_LevelOfConsciousne.Text,
+                HeentText = txtGA_Heen.Text,
+                MouthText = txtGA_MouthAndThroat.Text,
+                LymphText = txtGA_Lymphoma.Text,
+                ThyroidText = txtGA_Thyroid.Text,
+                ChestText = txtGA_LungChestBreast.Text,
+                HeartText = txtGA_Heart.Text,
+                AbdomenText = txtGA_Abdomen.Text,
+                ExtText = txtGA_Extremties.Text,
+                SkinText = txtGA_Skin.Text,
+                OtherText = txtGA_Others.Text,
+
+                IsActive = true,
+
+            };
+            await Fn.CreatPhysicalExaminationAsync(this, _checkupApiClient, command);
+        }
+        else
+        {
+            var command = new UpdatePhysicalExaminationCommand
+            {
+                Id = physicalExamViewModel.Id,
+                CheckupId = checkupViewModel.Id,
+                CheckupItemId = 1,
+                Ga = ddlGA_LevelOfConsciousne.EditValue?.ToString(),
+                Heent = ddlGA_Heen.EditValue?.ToString(),
+                Mouth = ddlGA_MouthAndThroat.EditValue?.ToString(),
+                Lymph = ddlGA_Lymphoma.EditValue?.ToString(),
+                Thyroid = ddlGA_Thyroid.EditValue?.ToString(),
+                Chest = ddlGA_LungChestBreast.EditValue?.ToString(),
+                Heart = ddlGA_Heart.EditValue?.ToString(),
+                Abdomen = ddlGA_Abdomen.EditValue?.ToString(),
+                Ext = ddlGA_Extremties.EditValue?.ToString(),
+                Skin = ddlGA_Skin.EditValue?.ToString(),
+                Other = ddlGA_Others.EditValue?.ToString(),
+
+                GaText = txtGA_LevelOfConsciousne.Text,
+                HeentText = txtGA_Heen.Text,
+                MouthText = txtGA_MouthAndThroat.Text,
+                LymphText = txtGA_Lymphoma.Text,
+                ThyroidText = txtGA_Thyroid.Text,
+                ChestText = txtGA_LungChestBreast.Text,
+                HeartText = txtGA_Heart.Text,
+                AbdomenText = txtGA_Abdomen.Text,
+                ExtText = txtGA_Extremties.Text,
+                SkinText = txtGA_Skin.Text,
+                OtherText = txtGA_Others.Text,
+
+                IsActive = true,
+
+            };
+            await Fn.UpdatePhysicalExaminationAsync(this, _checkupApiClient, physicalExamViewModel.Id, command);
+        }
+
+
+    }
+
+    public async Task SaveVisionAsync(Checkup.Api.Client.CheckupViewModel checkupViewModel)
+    {
+        VisionViewModel visionViewModel = null;
+        try
+        {
+            visionViewModel = await _checkupApiClient.GetVisionByVisitNumberAsync(checkupViewModel.VisitNumber, checkupViewModel.Id);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex.Message);
+            visionViewModel = null;
+        }
+
+<<<<<<< HEAD
+        int.TryParse(txtVS_EyeballLeft.Text, out int pressureLeft);
+        int.TryParse(txtVS_EyeballRight.Text, out int pressureRight);
+
+        var itemList = await Fn.GetCheckupItemByClassCodeAsync(CClass.VisionScreening, this, _checkupApiClient);
+        var checkupItemId = itemList.CheckupItems.FirstOrDefault()?.Id;
+        if (checkupItemId != null)
+        {
+            if (visionViewModel == null)
+=======
+        //if (radioGroup5.EditValue == null)
+        //{
+        //    MessageBox.Show(this, "โปรดระบุระดับการมองเห็น ตาซ้าย", "Vision Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    return;
+        //}            
+
+        //if (radioGroup6.EditValue == null)
+        //{
+        //    MessageBox.Show(this, "โปรดระบุระดับการมองเห็น ตาขวา", "Vision Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    return;
+        //}
+
+        int eyeballLeft = 0;
+        //if (txtVS_EyeballLeft.Text != string.Empty && !int.TryParse(txtVS_EyeballLeft.Text, out eyeballLeft))
+        //{
+        //    MessageBox.Show(this, "โปรดระบุความดันลูกตาเป็นตัวเลข(ตาซ้าย)", "Vision Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    return;
+        //}
+        int eyeballRight = 0;
+        //if (txtVS_EyeballRight.Text != string.Empty && !int.TryParse(txtVS_EyeballRight.Text, out eyeballRight))
+        //{
+        //    MessageBox.Show(this, "โปรดระบุความดันลูกตาเป็นตัวเลข(ตาขวา)", "Vision Screen", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+        //    return;
+        //}      
+        int? pressureLeft = (eyeballLeft == 0) ? null : eyeballLeft;
+        int? pressureRight = (eyeballRight == 0) ? null : eyeballRight;
+
+        if (visionViewModel == null)
+        {
+            var command = new CreateVisionCommand
+>>>>>>> c6a329d (save PE)
+            {
+                var command = new CreateVisionCommand
+                {
+                    VisitNumber = checkupViewModel.VisitNumber,
+                    CheckupId = checkupViewModel.Id,
+                    CheckupItemId = (int)checkupItemId,
+                    ColorBlind = optVS_ColorBlind.EditValue?.ToString(),
+                    IsActive = true,
+                    PH_Left_Result = ddlPH_VisibilityLeft.EditValue?.ToString(),
+                    PH_Left_Value = txtPH_VisibilityLeft.Text,
+                    PH_Right_Result = ddlPH_VisibilityRight.EditValue?.ToString(),
+                    PH_Right_Value = txtPH_VisibilityRight.Text,
+                    PressureLeft = (txtVS_EyeballLeft.Text == string.Empty)? null : pressureLeft,
+                    PressureRight = (txtVS_EyeballRight.Text == string.Empty) ? null : pressureRight,
+                    RetinaLeft = txtVS_RetinaLeft.Text,
+                    RetinaRight = txtVS_RetinaRight.Text,
+                    Squint = optVS_Squint.EditValue?.ToString(),
+                    VA_Left_Result = ddlVS_VisibilityLeft.EditValue?.ToString(),
+                    VA_Left_Value = txtVS_VisibilityLeft.Text,
+                    VA_Right_Result = ddlVS_VisibilityRight.EditValue?.ToString(),
+                    VA_Right_Value = txtVS_VisibilityRight.Text,
+                    Vision3D = optVS_3D.EditValue?.ToString(),
+                    VisionLeftResult = radioGroup5.EditValue?.ToString(),
+                    VisionRightResult = radioGroup6.EditValue?.ToString(),
+                    VisualField = optVS_VisualField.EditValue?.ToString(),
+                };
+                await Fn.CreatVisionAsync(this, _checkupApiClient, command);
+            }
+            else
+            {
+                var command = new UpdateVisionCommand
+                {
+                    Id = visionViewModel.Id,
+                    VisitNumber = checkupViewModel.VisitNumber,
+                    ColorBlind = optVS_ColorBlind.EditValue?.ToString(),
+                    IsActive = true,
+                    PH_Left_Result = ddlPH_VisibilityLeft.EditValue?.ToString(),
+                    PH_Left_Value = txtPH_VisibilityLeft.Text,
+                    PH_Right_Result = ddlPH_VisibilityRight.EditValue?.ToString(),
+                    PH_Right_Value = txtPH_VisibilityRight.Text,
+                    PressureLeft = (txtVS_EyeballLeft.Text == string.Empty) ? null : pressureLeft,
+                    PressureRight = (txtVS_EyeballRight.Text == string.Empty) ? null : pressureRight,
+                    RetinaLeft = txtVS_RetinaLeft.Text,
+                    RetinaRight = txtVS_RetinaRight.Text,
+                    Squint = optVS_Squint.EditValue?.ToString(),
+                    VA_Left_Result = ddlVS_VisibilityLeft.EditValue?.ToString(),
+                    VA_Left_Value = txtVS_VisibilityLeft.Text,
+                    VA_Right_Result = ddlVS_VisibilityRight.EditValue?.ToString(),
+                    VA_Right_Value = txtVS_VisibilityRight.Text,
+                    Vision3D = optVS_3D.EditValue?.ToString(),
+                    VisionLeftResult = radioGroup5.EditValue?.ToString(),
+                    VisionRightResult = radioGroup6.EditValue?.ToString(),
+                    VisualField = optVS_VisualField.EditValue?.ToString(),
+                };
+                await Fn.UpdateVisionAsync(this, _checkupApiClient, visionViewModel.Id, command);
+            }
+        }
+    }
+
+    private async void button1_Click(object sender, EventArgs e)
+    {
+        await SaveVisionAsync(_checkupViewModel);
+    }
+    private async void CreateAudiogram()
+    {
+        var itemGroups = await Fn.GetCheckupItemByClassCodeAsync(CheckupItemCode.Audiogram, this, _checkupApiClient);
+        if (itemGroups == null) return;
+
+        var itemGroup = itemGroups.CheckupItems.ToList();
+
+        var audiogramCreate = new CreateAudiogramCommand()
+        {
+            CheckupId = _checkupViewModel.Id,
+            CheckupItemId = itemGroup.Select(c => c.Id).FirstOrDefault(),
+            VisitNumber = _checkupViewModel.VisitNumber,
+            LeftResult = txtEarsLeftRemark.Text,
+            RightResult = txtEarsRightRemark.Text,
+            LeftAbnormalTypeId = int.Parse(ddlEarsLeft.EditValue.ToString() ?? "0"),
+            RightAbnormalTypeId = int.Parse(ddlEarsRight.EditValue.ToString() ?? "0"),
+        };
+
+        var audiogramId = await _checkupApiClient.CreateAudiogramAsync(audiogramCreate);
+
+        var hearingHertzs = (List<SUTH.Checkup.Api.Client.HearingViewModel>)gridViewHearing.DataSource;
+        CreateHearingListCommand hearingHertzList = new();
+
+        foreach (var item in hearingHertzs)
+        {
+            var hearingHertz = new CreateHearingCommand()
+            {
+                AudiogramId = audiogramId,
+                Hertz = item.Hertz,
+                LeftHz = item.LeftHz,
+                RightHz = item.RightHz,
+            };
+            hearingHertzList.CreateHearingCommand.Add(hearingHertz);
+        }
+        try
+        {
+            await _checkupApiClient.CreateHearingListAsync(hearingHertzList);
+        }
+        catch (ApiClientException<ValidationProblemDetails> ex)
+        {
+            string message = Fn.GetValidationErrorMessage(ex);
+            MessageBox.Show(this, message, "CreateHearing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        catch (ApiClientException<ProblemDetails> ex)
+        {
+            string message = Fn.GetProblemErrorMessage(ex);
+            MessageBox.Show(this, message, "GetCheckupItemGroup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+        }
+        catch (SUTH.Hosxp.Api.Client.ApiClientException ex)
+        {
+            MessageBox.Show(this, ex.Message, "GetCheckupItemGroup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(this, ex.Message, "GetCheckupItemGroup", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+    }
+
+    private async void cmdSaveAddress_Click(object sender, EventArgs e)
+    {
+<<<<<<< HEAD
+        SaveGridviewLab();
+        SaveXrayTab();
+
+        //var audiogram = _checkupViewModel.Audiograms.FirstOrDefault();
+        //if (audiogram == null)
+        //{
+        //    CreateAudiogram();
+        //}
+        //else
+        //{
+
+=======
+        //var audiogram = _checkupViewModel.Audiograms.FirstOrDefault();
+        //if (audiogram == null)
+        //{
+        //    CreateAudiogram();
+        //}
+        //else
+        //{
+
+>>>>>>> 12864d7 (add di service collection, clean)
+        //}
+=======
+        await SavePatientAddressAsync();
+    }
+
+    public async Task SavePatientAddressAsync()
+    {
+        var address = new UpdateAdressPatientCommand
+        {
+            Address = txtAddress.Text,
+            ProvinceId = ddlProvince.EditValue.ToString(),
+            ZipCode = txtZipCode.Text,
+            DistrictId = ddlDistrict.EditValue.ToString(),
+            SubDistrictId = ddlSubDistrict.EditValue.ToString(),
+            //LeftAbnormalTypeId = int.Parse(ddlEarsLeft.EditValue.ToString() ?? "0"), 
+        };
+        await _checkupApiClient.UpdatePatientAddressAsync(_checkupViewModel.Patient.Id, address);
+    }
+
+    private void ddlProvince_EditValueChanged(object sender, EventArgs e)
+    {
+        BindDistrictToDDL();
+>>>>>>> c6a329d (save PE)
+    }
+
+    public async void SaveGridviewLab()
+    {
+        var updatCreateList = new List<CreateLabCommand>();
+        for (int i = 0; i < gridViewUrine.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = gridViewUrine.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = gridViewUrine.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = gridViewUrine.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = gridViewUrine.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = gridViewUrine.GetRowCellValue(i, "ResultValue")?.ToString(),   
+                VisitNumber = _checkupViewModel.VisitNumber,                
+            });
+        }
+
+        for (int i = 0; i < gridViewCBC.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = gridViewCBC.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = gridViewCBC.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = gridViewCBC.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = gridViewCBC.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = gridViewCBC.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+        for (int i = 0; i < gridViewBloodChemistry.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = gridViewBloodChemistry.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = gridViewBloodChemistry.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = gridViewBloodChemistry.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = gridViewBloodChemistry.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = gridViewBloodChemistry.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+        for (int i = 0; i < gridViewStool.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = gridViewStool.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = gridViewStool.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = gridViewStool.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = gridViewStool.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = gridViewStool.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+        for (int i = 0; i < gridViewStoolCulture.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = gridViewStoolCulture.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = gridViewStoolCulture.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = gridViewStoolCulture.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = gridViewStoolCulture.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = gridViewStoolCulture.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+        for (int i = 0; i < grdViewSpecialTest.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = grdViewSpecialTest.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = grdViewSpecialTest.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = grdViewSpecialTest.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = grdViewSpecialTest.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = grdViewSpecialTest.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+        for (int i = 0; i < grdViewConfidential.DataRowCount; i++)
+        {
+            updatCreateList.Add(new CreateLabCommand
+            {
+                CheckupId = _checkupViewModel.Id,
+                Comments = grdViewConfidential.GetRowCellValue(i, "Comment")?.ToString(),
+                IsAbnormal = grdViewConfidential.GetRowCellValue(i, "IsAbnormal")?.ToString(),
+                LabItemCode = grdViewConfidential.GetRowCellValue(i, "LabItemCode")?.ToString(),
+                ReferenceRange = grdViewConfidential.GetRowCellValue(i, "ReferenceRange")?.ToString(),
+                ResultDate = DateTime.Now,
+                ResultTime = DateTime.Now.TimeOfDay,
+                ResultValue = grdViewConfidential.GetRowCellValue(i, "ResultValue")?.ToString(),
+                VisitNumber = _checkupViewModel.VisitNumber,
+            });
+        }
+
+
+        var command = new UpdateCreateLabListCommand { UpdateCreateList = updatCreateList };
+        await Fn.UpdateCreateLabListAsync(this, _checkupApiClient, command);
+    }
+
+    public async void SaveXrayTab()
+    {
+        var xrayItemGroups = await Fn.GetCheckupItemByClassCodeAsync(CClass.Xray, this, _checkupApiClient);
+        var otherItemGroups = await Fn.GetCheckupItemByClassCodeAsync(CClass.OtherTest, this, _checkupApiClient);
+        if (xrayItemGroups != null && otherItemGroups != null)
+        {
+            var updateCreateXrayList = new List<CreateXrayCommand>();
+            var chestPACheckupItem = xrayItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.ChestPAcheckup);
+            if (chestPACheckupItem != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = chestPACheckupItem.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_ChestPA.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_ChestPA.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,                        
+                    }
+                );
+            }
+
+            var uWholeAbdomenItem = xrayItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.UltrasoundWholeAbdomen);
+            if (uWholeAbdomenItem != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = uWholeAbdomenItem.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_AbdomenRemark.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_Abdomen.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,
+                    }
+                );
+            }
+
+            var echoItem = otherItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.ECH);
+            if (echoItem != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = echoItem.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_EchoRemark.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_Echo.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,
+                    }
+                );
+            }
+
+            var uUpperAbdomen = xrayItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.UltrasoundUpperAbdomen);
+            if (uUpperAbdomen != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = uUpperAbdomen.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_UpperAbdomenRemark.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_UpperAbdomen.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,
+                    }
+                );
+            }
+
+            var mamoItem = otherItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.MAMO);
+            if (mamoItem != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = mamoItem.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_Mammogram.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_Mammogram.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,
+                    }
+                );
+            }
+
+            var ultrasoundBreatItem = xrayItemGroups.CheckupItems.FirstOrDefault(s => s.Code == CheckupItemCode.UltrasoundBreast);
+            if (ultrasoundBreatItem != null)
+            {
+                updateCreateXrayList.Add(
+                    new CreateXrayCommand
+                    {
+                        CheckupId = _checkupViewModel.Id,
+                        CheckupItemId = ultrasoundBreatItem.Id,
+                        IsAbnormal = string.Empty,
+                        ReportText = richX_USBreast.Text,
+                        ResultReport = string.Empty,
+                        ResultValue = ddlX_USBreast.EditValue?.ToString(),
+                        VisitNumber = _checkupViewModel.VisitNumber,
+                    }
+                );
+            }
+
+            var command = new UpdateCreateXrayListCommand { XrayList = updateCreateXrayList };
+            await Fn.UpdateCreateXrayListAsync(this, _checkupApiClient, command);
+        }
+
+
+    }
+
+}

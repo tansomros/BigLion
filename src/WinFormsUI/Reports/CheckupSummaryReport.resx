@@ -1,0 +1,567 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="xrLabel130.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HBAnR'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HBAnR'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HBAnR'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel132.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HBAgR'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HBAgR'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HBAgR'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel73.ExpressionBindings" xml:space="preserve">
+    <value>Concat( [Patient].[Address],
+IIF([Patient].[ProvinceId]==10, ' แขวง',' ต.'),[Patient].[SubDistrict].[Name],
+IIF([Patient].[ProvinceId]==10, ' เขต',' อ.'),[Patient].[District].[Name],
+IIF([Patient].[ProvinceId]==10, ' ',' จ.'),[Patient].[Province].[Name],
+' ',[Patient].[ZipCode]
+)</value>
+  </data>
+  <data name="xrPictureBox1.ImageSource" xml:space="preserve">
+    <value>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</value>
+  </data>
+  <data name="xrLabel177.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'CA125'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'CA125'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'CA125'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel173.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'CA199'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'CA199'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'CA199'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel175.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'PSA'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'PSA'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'PSA'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel162.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'CEA'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'CEA'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'CEA'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel171.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'AFP'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'AFP'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'AFP'].Single([ResultValue])
+) </value>
+  </data>
+  <data name="xrLabel125.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'EGFR'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'EGFR'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'EGFR'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel154.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'BUN'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'BUN'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'BUN'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel157.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'CRE'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'CRE'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'CRE'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel110.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'UR'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'UR'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'UR'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel159.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'ALP'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'ALP'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'ALP'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel166.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'AST'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'AST'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'AST'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel169.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'ALT'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'ALT'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'ALT'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel104.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HDL'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HDL'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HDL'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel106.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'LDL'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'LDL'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'LDL'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel97.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'CHOL'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'CHOL'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'CHOL'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel100.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'TRI'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'TRI'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'TRI'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel87.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HBA1C'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HBA1C'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HBA1C'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel80.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'FBS'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'FBS'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'FBS'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrTableCell11.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'WBC'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'WBC'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'WBC'].Single([ResultValue])
+)
+ 
+</value>
+  </data>
+  <data name="xrTableCell13.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'WBC'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'WBC'].Single([ResultValue])),
+    '', [Checkup].[Labs][[ItemCode] == 'WBC'].Single(Concat('('+[ReferenceRange],')'))
+)
+
+</value>
+  </data>
+  <data name="xrTableCell45.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'PMN'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'PMN'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'PMN'].Single(Concat([ResultValue]))
+)
+</value>
+  </data>
+  <data name="xrTableCell47.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'PMN'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'PMN'].Single([ResultValue])),
+    '', [Checkup].[Labs][[ItemCode] == 'PMN'].Single(Concat('('+[ReferenceRange],')'))
+)</value>
+  </data>
+  <data name="xrTableCell15.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'LYM'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'LYM'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'LYM'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrTableCell17.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'LYM'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'LYM'].Single([ResultValue])),
+    '',
+    [Checkup].[Labs][[ItemCode] == 'LYM'].Single(Concat('('+[ReferenceRange],')'))
+)
+</value>
+  </data>
+  <data name="xrTableCell49.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'MON'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'MON'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'MON'].Single([ResultValue])
+)
+
+</value>
+  </data>
+  <data name="xrTableCell51.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'MON'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'MON'].Single([ResultValue])),
+    '',
+    [Checkup].[Labs][[ItemCode] == 'MON'].Single(Concat('('+[ReferenceRange],')'))
+)</value>
+  </data>
+  <data name="xrTableCell19.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'EOS'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'EOS'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'EOS'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrTableCell21.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'EOS'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'EOS'].Single([ResultValue])),
+    '',
+    [Checkup].[Labs][[ItemCode] == 'EOS'].Single(Concat('('+[ReferenceRange],')'))
+)
+</value>
+  </data>
+  <data name="xrTableCell41.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'BAS'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'BAS'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'BAS'].Single([ResultValue])
+)
+
+</value>
+  </data>
+  <data name="xrTableCell43.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'BAS'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'BAS'].Single([ResultValue])),
+    '',
+    [Checkup].[Labs][[ItemCode] == 'BAS'].Single(Concat('('+[ReferenceRange],')'))
+)</value>
+  </data>
+  <data name="xrLabel7.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'PLC'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'PLC'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'PLC'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel88.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HCT'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HCT'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HCT'].Single([ResultValue]+ '  (' + [ReferenceRange]+')')
+)</value>
+  </data>
+  <data name="lblHemoglobin.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'HEMO'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'HEMO'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'HEMO'].Single([ResultValue]+ '  (' + [ReferenceRange]+')')
+)
+</value>
+  </data>
+  <data name="xrLabel180.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'TSH'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'TSH'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'TSH'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel212.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'FT4'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'FT4'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'FT4'].Single([ResultValue])
+)</value>
+  </data>
+  <data name="xrLabel214.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Labs][[ItemCode] == 'FT3'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Labs][[ItemCode] == 'FT3'].Single([ResultValue])),
+    'ไม่ตรวจ',
+    [Checkup].[Labs][[ItemCode] == 'FT3'].Single([ResultValue])
+)
+</value>
+  </data>
+  <data name="xrLabel208.ExpressionBindings" xml:space="preserve">
+    <value> IIF(IsNullOrEmpty([Checkup].[Visions].[RetinaLeft]) And IsNullOrEmpty([Checkup].[Visions].[RetinaRight]),'ไม่ตรวจ',
+Iif( [Checkup].[Visions].[RetinaLeft]=='รอจักษุแพทย์อ่านผล' And [Checkup].[Visions].[RetinaRight]== 'รอจักษุแพทย์อ่านผล' , 'รอจักษุแพทย์อ่านผล' ,  
+'ตาขวา=' + [Checkup].[Visions].[RetinaRight]	
+      + NewLine()+ 'ตาซ้าย=' +[Checkup].[Visions].[RetinaLeft]))</value>
+  </data>
+  <data name="xrLabel114.ExpressionBindings" xml:space="preserve">
+    <value>   IIF(IsNullOrEmpty([Checkup].[Visions].[PressureLeft]) And IsNullOrEmpty([Checkup].[Visions].[PressureRight]),'ไม่ตรวจ','ตาขวา=' + [Checkup].[Visions].[PressureRight]	
+      + NewLine()+ 'ตาซ้าย=' +[Checkup].[Visions].[PressureLeft])</value>
+  </data>
+  <data name="xrLabel113.ExpressionBindings" xml:space="preserve">
+    <value>  IIF((IsNullOrEmpty([Checkup].[Visions].[VisionRightResult]) Or [Checkup].[Visions].[VisionRightResult]=='ไม่ตรวจ') 
+     And (IsNullOrEmpty([Checkup].[Visions].[VisionLeftResult]) Or [Checkup].[Visions].[VisionLeftResult]=='ไม่ตรวจ')
+      ,'ไม่ตรวจ'
+      ,'ตาขวา=' +'cc'+ [Checkup].[Visions].[VA_Right_Value]  +' '+	'ph'+[Checkup].[Visions].[PH_Right_Value]  +' '+
+      	'('+ IIF([Checkup].[Visions].[VisionRightResult] =='Normal' , 'ปกติ/Normal',[Checkup].[Visions].[VisionRightResult]) +')'        
+      + NewLine()+ 
+      'ตาซ้าย=' +'cc'+ [Checkup].[Visions].[VA_Left_Value]  +' '+	'ph'+[Checkup].[Visions].[PH_Left_Value]  +' '+
+      	'('+ IIF([Checkup].[Visions].[VisionLeftResult] =='Normal' , 'ปกติ/Normal',[Checkup].[Visions].[VisionLeftResult]) +')' )</value>
+  </data>
+  <data name="xrLabel221.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'X'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'X'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'X'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'X'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'X'].Single([ResultReport])))
+</value>
+  </data>
+  <data name="xrLabel181.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'EKG'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'EKG'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'EKG'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'EKG'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'EKG'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel138.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'ECH'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'ECH'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'ECH'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'ECH'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'ECH'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel143.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'UWA'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UWA'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'UWA'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UWA'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'UWA'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel135.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'UUA'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UUA'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'UUA'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UUA'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'UUA'].Single([ResultReport])))
+</value>
+  </data>
+  <data name="xrLabel220.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'UB'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UB'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'UB'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'UB'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'UB'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel186.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'EST'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'EST'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'EST'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'EST'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'EST'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel183.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'ABI'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'ABI'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'ABI'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'ABI'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'ABI'].Single([ResultReport])))
+
+</value>
+  </data>
+  <data name="xrLabel193.ExpressionBindings" xml:space="preserve">
+    <value>Iif(
+    [Checkup].[Xrays][[ItemCode] == 'BMD'].Count() = 0
+    Or IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'BMD'].Single([ResultValue])),
+    'ไม่ตรวจ',[Checkup].[Xrays][[ItemCode] == 'BMD'].Single([ResultDisplayName])
++ iif( IsNullOrEmpty([Checkup].[Xrays][[ItemCode] == 'BMD'].Single([ResultReport]))
+,'',NewLine()+ [Checkup].[Xrays][[ItemCode] == 'BMD'].Single([ResultReport])))
+
+</value>
+  </data>
+</root>

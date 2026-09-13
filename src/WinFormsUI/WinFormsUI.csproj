@@ -1,0 +1,195 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AssemblyName>SUTH.HealthCheckup.WinFormsUI</AssemblyName>
+    <RootNamespace>SUTH.HealthCheckup.WinFormsUI</RootNamespace>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <StartupObject>SUTH.HealthCheckup.WinFormsUI.Program</StartupObject>
+    <AssemblyVersion>69.7.3.2</AssemblyVersion>
+    <ApplicationIcon>iCheckup.ico</ApplicationIcon>
+    <SupportedOSPlatformVersion>8.0</SupportedOSPlatformVersion>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <PublishTrimmed>false</PublishTrimmed>    
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Controllers\**" />
+    <Compile Remove="ValueObject\**" />
+    <EmbeddedResource Remove="Controllers\**" />
+    <EmbeddedResource Remove="ValueObject\**" />
+    <None Remove="Controllers\**" />
+    <None Remove="ValueObject\**" />
+    <Page Remove="Controllers\**" />
+    <Page Remove="ValueObject\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="CompareLayout.cs" />
+    <Compile Remove="CompareLayout.Designer.cs" />
+    <Compile Remove="frmCheckUpMainXX.cs" />
+    <Compile Remove="frmCheckUpMainXX.Designer.cs" />
+    <Compile Remove="frmMessage.cs" />
+    <Compile Remove="frmMessage.Designer.cs" />
+    <Compile Remove="frmUserAuthorize.cs" />
+    <Compile Remove="frmUserAuthorize.Designer.cs" />
+    <Compile Remove="Models\BEL.cs" />
+    <Compile Remove="PatientList.cs" />
+    <Compile Remove="PatientList.Designer.cs" />
+    <Compile Remove="ReportMenu.cs" />
+    <Compile Remove="ReportMenu.Designer.cs" />
+    <Compile Remove="Reports\CheckupSummaryReport_v1.cs" />
+    <Compile Remove="Reports\CheckupSummaryReport_v1.Designer.cs" />
+    <Compile Remove="Reports\xrLiver.cs" />
+    <Compile Remove="Reports\xrLiver.Designer.cs" />
+    <Compile Remove="Reports\xrRFT.cs" />
+    <Compile Remove="Reports\xrRFT.Designer.cs" />
+    <Compile Remove="Reports\xrWBC.cs" />
+    <Compile Remove="Reports\xrWBC.Designer.cs" />
+    <Compile Remove="ReportViewer.cs" />
+    <Compile Remove="ReportViewer.Designer.cs" />
+    <Compile Remove="WaitForm.cs" />
+    <Compile Remove="WaitForm.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Remove="CompareLayout.resx" />
+    <EmbeddedResource Remove="frmCheckUpMainXX.resx" />
+    <EmbeddedResource Remove="frmMessage.resx" />
+    <EmbeddedResource Remove="frmUserAuthorize.resx" />
+    <EmbeddedResource Remove="PatientList.resx" />
+    <EmbeddedResource Remove="ReportMenu.resx" />
+    <EmbeddedResource Remove="Reports\CheckupSummaryReport_v1.resx" />
+    <EmbeddedResource Remove="Reports\xrLiver.resx" />
+    <EmbeddedResource Remove="Reports\xrRFT.resx" />
+    <EmbeddedResource Remove="Reports\xrWBC.resx" />
+    <EmbeddedResource Remove="ReportViewer.resx" />
+    <EmbeddedResource Remove="WaitForm.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="frmCheckupMain.cs.orig" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="iCheckup.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="ClosedXML" />
+    <PackageReference Include="DevExpress.Images" />
+    <PackageReference Include="DevExpress.Reporting.Core" />
+    <PackageReference Include="DevExpress.Win.Design" />
+    <PackageReference Include="DevExpress.Win.Reporting" />
+    <PackageReference Include="Duende.IdentityModel" />
+    <PackageReference Include="Duende.IdentityModel.OidcClient" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Client">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.UserSecrets" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" />
+    <PackageReference Include="Microsoft.Web.WebView2" />
+    <PackageReference Include="Newtonsoft.Json" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="NSwag.ApiDescription.Client">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Data.SqlClient" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Update="Properties\Settings.Designer.cs">
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </None>
+
+    <None Remove="appsettings.Development.json" />
+    <None Remove="appsettings.Production.json" />
+
+    <Content Include="appsettings.Development.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+
+    <Content Include="appsettings.Production.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+
+    <PublishFile Include="appsettings.Development.json">
+      <Visible>false</Visible>
+      <Group />
+      <TargetPath>appsettings.Development.json</TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>File</FileType>
+    </PublishFile>
+
+    <PublishFile Include="appsettings.Production.json">
+      <Visible>false</Visible>
+      <Group />
+      <TargetPath>appsettings.Production.json</TargetPath>
+      <PublishState>Include</PublishState>
+      <FileType>File</FileType>
+    </PublishFile>
+    
+    <None Update="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <OpenApiReference Include="OpenAPIs\swagger.json" CodeGenerator="NSwagCSharp" Namespace="SUTH.HealthCheckup.WinFormsUI.Hosxp.Api.Client" Options="/GenerateExceptionClasses:true /ExceptionClass:ApiClientException" ClassName="HosxpApiClient">
+      <SourceUri>https://hosxp-api.suth.go.th/swagger/v1/swagger.json</SourceUri>
+      <!--<SourceUri>https://localhost:5001/swagger/v1/swagger.json</SourceUri>-->
+      <OutputPath>OpenAPIs\HosxpApiClient.cs</OutputPath>
+    </OpenApiReference>
+    <OpenApiReference Include="OpenAPIs\swagger1.json" CodeGenerator="NSwagCSharp" Namespace="SUTH.HealthCheckup.WinFormsUI.Checkup.Api.Client" Options="/AdditionalNamespaceUsages:SUTH.HealthCheckup.WinFormsUI.Hosxp.Api.Client /GenerateExceptionClasses:false /ExceptionClass:ApiClientException /GenerateDataAnnotations:false /GenerateDateFormatConverterClass:false" ClassName="CheckupApiClient">
+       <!--<SourceUri>https://checkup.suth.go.th/api/swagger/v1/swagger.json</SourceUri>-->
+      <SourceUri>https://localhost:8114/api/swagger/v1/swagger.json</SourceUri>
+      <OutputPath>OpenAPIs\CheckupApiClient.cs</OutputPath>
+    </OpenApiReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="DevTools">
+      <HintPath>..\..\..\DLL\DevTools.dll</HintPath>
+    </Reference>
+    <Reference Include="DevTools.WinForm.NetFramework">
+      <HintPath>..\..\..\DLL\DevTools.WinForm.NetFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="WeraControls">
+      <HintPath>..\..\..\DLL\WeraControls.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- Auto-fix DateFormatConverter after NSwag generates code -->
+  <Target Name="FixDateFormatConverter" AfterTargets="Build">
+    <Message Text="&gt;&gt;&gt; FixDateFormatConverter Target is running..." Importance="high" />
+    <Message Text="&gt;&gt;&gt; ProjectDir: $(ProjectDir)" Importance="high" />
+    <Exec Command="powershell -ExecutionPolicy Bypass -File $(ProjectDir)FixDateFormatConverter.ps1 -FilePath $(ProjectDir)obj\OpenAPIs\CheckupApiClient.cs" />
+  </Target>
+  
+</Project>

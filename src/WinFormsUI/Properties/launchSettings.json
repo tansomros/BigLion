@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "CheckupDev": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development",
+        "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT": "0"
+      }
+    },
+    "CheckupProd": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Production",
+        "DOTNET_SYSTEM_GLOBALIZATION_INVARIANT": "0"
+      }
+    }
+  }
+}
